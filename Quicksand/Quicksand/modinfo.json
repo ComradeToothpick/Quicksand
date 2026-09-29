@@ -8,7 +8,7 @@
         "Comrade_Toothpik"
     ],
     "description": "Adds quicksand that generates near water and can be placed from the creative inventory. Sink slowly when still, faster the harder you struggle.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "dependencies": {
         "game": "1.22.0"
     }
