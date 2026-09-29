@@ -1,0 +1,13 @@
+[
+	{
+		blockCodes: ["quicksand:quicksand"],
+		placement: "NearWater",
+		quantity: { dist: "invexp", avg: 8, var: 6 },
+		offsetX: { dist: "gaussian", avg: 0, var: 4 },
+		offsetZ: { dist: "gaussian", avg: 0, var: 4 },
+		chance: 0.04,
+		minTemp: 5,
+		minRain: 0.3,
+		maxHeightDifferential: 2
+	}
+]

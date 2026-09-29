@@ -1,0 +1,15 @@
+{
+    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+    "type": "Code",
+    "modid": "quicksand",
+    "name": "Quicksand",
+    "authors": [
+        "SiiMeR",
+        "Comrade_Toothpik"
+    ],
+    "description": "Adds quicksand that generates near water and can be placed from the creative inventory. Sink slowly when still, faster the harder you struggle.",
+    "version": "1.0.0",
+    "dependencies": {
+        "game": "1.22.0"
+    }
+}
