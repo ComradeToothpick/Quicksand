@@ -13,6 +13,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Reference Include="Vigor">
+            <HintPath>..\..\..\..\ModReferences\vigor_122.7.5\Vigor.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
         <Reference Include="VintagestoryAPI">
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
             <Private>false</Private>

@@ -1,4 +1,7 @@
 using System;
+using System.Reflection;
+using Quicksand.Compat;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -14,17 +17,26 @@ public class BlockQuicksand : Block
     private float climbSpeed = 0.004f;
     private float maxHorizontalSpeed = 0.03f;
     private float friction = 0.99f;
-
+    internal static bool vigorEnabled = false;
+    private QuicksandOverlay overlay;
+    
+    private QuicksandModSystem modSystem;
     public override void OnLoaded(ICoreAPI api)
     {
         base.OnLoaded(api);
 
         if (Attributes == null) return;
-
+        modSystem = api.ModLoader.GetModSystem<QuicksandModSystem>();
         stillSinkSpeed = Attributes["stillSinkSpeed"].AsFloat(stillSinkSpeed);
         maxSinkSpeed = Attributes["maxSinkSpeed"].AsFloat(maxSinkSpeed);
         climbSpeed = Attributes["climbSpeed"].AsFloat(climbSpeed);
         maxHorizontalSpeed = Attributes["maxHorizontalSpeed"].AsFloat(maxHorizontalSpeed);
+        if (api.Side == EnumAppSide.Client)
+        {
+            ICoreClientAPI capi = (ICoreClientAPI)api;
+            overlay = new QuicksandOverlay(capi);
+            capi.Gui.RegisterDialog(this.overlay);
+        }
     }
 
     public override void OnEntityInside(IWorldAccessor world, Entity entity, BlockPos pos)
@@ -35,14 +47,16 @@ public class BlockQuicksand : Block
         
         EntityControls? controls = (entity as EntityAgent)?.Controls;
         if (controls != null && (controls.NoClip || controls.IsFlying || controls.DetachedMode)) return;
-
+        
+        bool exhausted = VigorStaminaCompat.IsExhausted(api, entity);
+        
         bool climbing = controls != null && controls.Jump;
         bool wading = controls != null && controls.TriesToMove;
         double targetVerticalSpeed = climbing ? climbSpeed : -SinkSpeed(controls);
 
         Vec3d motion = entity.Pos.Motion;
 
-        motion.Y = wading ? 2 * -stillSinkSpeed : targetVerticalSpeed;
+        motion.Y = wading ? 2 * -stillSinkSpeed : (exhausted ? 2 * -stillSinkSpeed : targetVerticalSpeed);
         if (entity.ApplyGravity)
         {
             float gravityTick = world.Side == EnumAppSide.Client ? 1f / 60f : GlobalConstants.PhysicsFrameTime;
@@ -64,14 +78,22 @@ public class BlockQuicksand : Block
             EntityBehaviorBreathe? breathe = entity.GetBehavior<EntityBehaviorBreathe>();
             if (breathe != null) breathe.HasAir = false;
         }
+        if (world.Side == EnumAppSide.Client && IsEyeInside(entity, pos))
+        {
+            if (!overlay.IsOpened()) overlay.TryOpen();
+        }
+        else if (world.Side == EnumAppSide.Client && !IsEyeInside(entity, pos))
+        {
+            if (overlay.IsOpened()) overlay.TryClose();
+        }
     }
 
     private static bool IsEyeInside(Entity entity, BlockPos pos)
     {
-        int eyeX = (int)(entity.Pos.X + entity.LocalEyePos.X);
-        int eyeY = (int)(entity.Pos.InternalY + entity.LocalEyePos.Y);
-        int eyeZ = (int)(entity.Pos.Z + entity.LocalEyePos.Z);
-
+        int eyeX = (int)Math.Floor(entity.Pos.X + entity.LocalEyePos.X);
+        int eyeY = (int)Math.Floor(entity.Pos.InternalY + entity.LocalEyePos.Y);
+        int eyeZ = (int)Math.Floor(entity.Pos.Z + entity.LocalEyePos.Z);
+        
         return pos.X == eyeX && pos.InternalY == eyeY && pos.Z == eyeZ;
     }
 

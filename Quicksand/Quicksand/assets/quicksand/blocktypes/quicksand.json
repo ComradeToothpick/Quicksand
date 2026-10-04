@@ -19,10 +19,10 @@
 		maxHorizontalSpeed: 0.03
 	},
 	sounds: {
-		place: "block/sand",
-		break: "block/sand",
-		hit: "block/sand",
-		walk: "walk/sand"
+		place: "game:block/sand",
+		break: "game:block/sand",
+		hit: "game:block/sand",
+		walk: "game:walk/sand"
 	},
 	heldTpIdleAnimation: "holdbothhandslarge",
 	heldRightReadyAnimation: "heldblockready",
