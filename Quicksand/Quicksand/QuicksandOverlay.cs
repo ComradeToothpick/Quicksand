@@ -1,3 +1,4 @@
+using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.MathTools;
 using Vintagestory.Client.NoObf;
@@ -16,7 +17,7 @@ public class QuicksandOverlay : GuiDialog
 
     public override double DrawOrder => -0.04;
     
-    private float alpha = 1f;
+    internal float alpha = 0f;
 
     public QuicksandOverlay(ICoreClientAPI capi) : base(capi)
     {
@@ -44,7 +45,9 @@ public class QuicksandOverlay : GuiDialog
     }
     public override void OnRenderGUI(float deltaTime)
     {
+        if (alpha <= 0) return;
         RenderBlack();
         base.OnRenderGUI(deltaTime);
+        alpha = Math.Max(alpha - deltaTime / 1.2f, 0);
     }
 }

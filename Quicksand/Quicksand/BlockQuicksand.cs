@@ -15,7 +15,7 @@ public class BlockQuicksand : Block
     private float stillSinkSpeed = 0.002f;
     private float maxSinkSpeed = 0.007f;
     private float climbSpeed = 0.004f;
-    private float maxHorizontalSpeed = 0.03f;
+    private float maxHorizontalSpeed = 0.05f;
     private float friction = 0.99f;
     internal static bool vigorEnabled = false;
     private QuicksandOverlay overlay;
@@ -55,7 +55,8 @@ public class BlockQuicksand : Block
         double targetVerticalSpeed = climbing ? climbSpeed : -SinkSpeed(controls);
 
         Vec3d motion = entity.Pos.Motion;
-
+        if (entity is EntityPlayer player) VigorStaminaCompat.StaminaCost(api, player, climbing);
+            
         motion.Y = wading ? 2 * -stillSinkSpeed : (exhausted ? 2 * -stillSinkSpeed : targetVerticalSpeed);
         if (entity.ApplyGravity)
         {
@@ -78,13 +79,10 @@ public class BlockQuicksand : Block
             EntityBehaviorBreathe? breathe = entity.GetBehavior<EntityBehaviorBreathe>();
             if (breathe != null) breathe.HasAir = false;
         }
-        if (world.Side == EnumAppSide.Client && IsEyeInside(entity, pos))
+        if (world.Side == EnumAppSide.Client)
         {
             if (!overlay.IsOpened()) overlay.TryOpen();
-        }
-        else if (world.Side == EnumAppSide.Client && !IsEyeInside(entity, pos))
-        {
-            if (overlay.IsOpened()) overlay.TryClose();
+            overlay.alpha = IsEyeInside(entity, pos) ? 1f : Math.Max(GetAlpha(entity, pos), overlay.alpha);
         }
     }
 
@@ -95,6 +93,22 @@ public class BlockQuicksand : Block
         int eyeZ = (int)Math.Floor(entity.Pos.Z + entity.LocalEyePos.Z);
         
         return pos.X == eyeX && pos.InternalY == eyeY && pos.Z == eyeZ;
+    }
+
+    private static float GetAlpha(Entity entity, BlockPos pos)
+    {
+        double eyeX = entity.Pos.X + entity.LocalEyePos.X;
+        double difX = Math.Min(Math.Abs(pos.X - eyeX), Math.Abs(pos.X + 1 - eyeX));
+        if (eyeX > pos.X && eyeX < pos.X + 1) difX = 0;
+        double eyeY = entity.Pos.InternalY + entity.LocalEyePos.Y;
+        double difY = Math.Min(Math.Abs(pos.Y - eyeY), Math.Abs(pos.Y + 1 - eyeY));
+        if (eyeY > pos.Y && eyeY < pos.Y + 1) difY = 0;
+        double eyeZ = entity.Pos.Z + entity.LocalEyePos.Z;
+        double difZ = Math.Min(Math.Abs(pos.Z - eyeZ), Math.Abs(pos.Z + 1 - eyeZ));
+        if (eyeZ > pos.Z && eyeZ < pos.Z + 1) difZ = 0;
+        double dist = Math.Sqrt(difX * difX + difY * difY + difZ * difZ);
+        float alpha = Math.Min(1f, Math.Max(-8f * (float)dist + 1f, 0f));
+        return alpha;
     }
 
     private double SinkSpeed(EntityControls? controls)

@@ -8,6 +8,7 @@ namespace Quicksand;
 public class QuicksandModSystem : ModSystem
 {
     private ICoreClientAPI capi;
+    private bool clientBlind = false;
     public override void Start(ICoreAPI api)
     {
         base.Start(api);
