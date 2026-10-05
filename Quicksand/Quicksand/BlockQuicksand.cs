@@ -79,10 +79,13 @@ public class BlockQuicksand : Block
             EntityBehaviorBreathe? breathe = entity.GetBehavior<EntityBehaviorBreathe>();
             if (breathe != null) breathe.HasAir = false;
         }
-        if (world.Side == EnumAppSide.Client)
+        if (world.Side == EnumAppSide.Client && entity is EntityPlayer)//checking the entity is a player to hopefully avoid other entities causing player blindness
         {
-            if (!overlay.IsOpened()) overlay.TryOpen();
-            overlay.alpha = IsEyeInside(entity, pos) ? 1f : Math.Max(GetAlpha(entity, pos), overlay.alpha);
+            if (((EntityPlayer)entity).PlayerUID == ((ICoreClientAPI)world.Api).World.Player.PlayerUID)//Only the client player should trigger blindness for the player
+            {
+                if (!overlay.IsOpened()) overlay.TryOpen();
+                overlay.alpha = IsEyeInside(entity, pos) ? 1f : Math.Max(GetAlpha(entity, pos), overlay.alpha);
+            }
         }
     }
 
@@ -107,7 +110,7 @@ public class BlockQuicksand : Block
         double difZ = Math.Min(Math.Abs(pos.Z - eyeZ), Math.Abs(pos.Z + 1 - eyeZ));
         if (eyeZ > pos.Z && eyeZ < pos.Z + 1) difZ = 0;
         double dist = Math.Sqrt(difX * difX + difY * difY + difZ * difZ);
-        float alpha = Math.Min(1f, Math.Max(-8f * (float)dist + 1f, 0f));
+        float alpha = Math.Min(1f, Math.Max(-4f * (float)dist + 1f, 0f));
         return alpha;
     }
 
