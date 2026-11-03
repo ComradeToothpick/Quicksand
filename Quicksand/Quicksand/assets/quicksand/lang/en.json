@@ -1,3 +1,16 @@
 {
-	"block-quicksand": "Quicksand"
+	"block-quicksand-andesite": "Andesite Quicksand",
+	"block-quicksand-basalt": "Basalt Quicksand",
+	"block-quicksand-bauxite": "Bauxite Quicksand",
+	"block-quicksand-chalk": "Chalk Quicksand",
+	"block-quicksand-chert": "Chert Quicksand",
+	"block-quicksand-claystone": "Claystone Quicksand",
+	"block-quicksand-conglomerate": "Conglomerate Quicksand",
+	"block-quicksand-granite": "Granite Quicksand",
+	"block-quicksand-limestone": "Limestone Quicksand",
+	"block-quicksand-peridotite": "Peridotite Quicksand",
+	"block-quicksand-phyllite": "Phyllite Quicksand",
+	"block-quicksand-sandstone": "Sandstone Quicksand",
+	"block-quicksand-shale": "Shale Quicksand",
+	"block-quicksand-slate": "Slate Quicksand"
 }

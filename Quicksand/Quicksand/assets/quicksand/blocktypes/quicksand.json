@@ -4,19 +4,36 @@
 	creativeinventory: { "general": ["*"], "terrain": ["*"] },
 	drawtype: "cube",
 	blockmaterial: "Sand",
+	variantgroups: [
+		{ loadFromProperties: "block/rock", code: "rock" },
+	],
 	textures: {
-		all: { base: "game:block/soil/muddygravel" }
+		all: {
+			base: "quicksand:quicksand/{rock}1",
+			tiles: [
+				{ base: "quicksand:quicksand/{rock}*" }
+
+			],
+			tilesWidth: 4
+		}
 	},
+	drops: [
+		{
+			type: "block",
+			code: "sand-{rock}",
+			quantity: { avg: 1, var: 0 }
+		}
+	],
 	collisionbox: null,
 	selectionbox: { x1: 0, y1: 0, z1: 0, x2: 1, y2: 1, z2: 1 },
 	replaceable: 500,
-	resistance: 1.5,
+	resistance: 3.5,
 	lightAbsorption: 0,
 	attributes: {
 		stillSinkSpeed: 0.002,
 		maxSinkSpeed: 0.007,
 		climbSpeed: 0.004,
-		maxHorizontalSpeed: 0.03
+		maxHorizontalSpeed: 0.05
 	},
 	sounds: {
 		place: "game:block/sand",
