@@ -33,8 +33,8 @@ internal static class VigorStaminaCompat
     [MethodImpl( MethodImplOptions.NoInlining)]
     private static void InternalStaminaCost(ICoreAPI api, EntityPlayer player, bool shouldDrain)
     {
-        VigorModSystem modSystem = api.ModLoader.GetModSystem<VigorModSystem>();
-        
+        VigorModSystem? modSystem = api.ModLoader.GetModSystem<VigorModSystem>();
+        if (modSystem == null) return;
         if (shouldDrain)
         {
             modSystem.ClientAPI
