@@ -35,15 +35,19 @@ internal static class VigorStaminaCompat
     {
         VigorModSystem? modSystem = api.ModLoader.GetModSystem<VigorModSystem>();
         if (modSystem == null) return;
+        if (modSystem.ClientAPI == null)
+        {
+            modSystem.ClientAPI = new VigorAPI(api);
+            api.Logger.Error("Quicksand: Vigor ClientAPI instance not set");
+            //return;
+        }
         if (shouldDrain)
         {
-            modSystem.ClientAPI
-                .StartStaminaDrain(player, player.PlayerUID + ".quicksand", 5f);
+            modSystem.ClientAPI.StartStaminaDrain(player, player.PlayerUID + ".quicksand", 5f);
         }
         else
         {
             modSystem.ClientAPI.StopStaminaDrain(player, player.PlayerUID + ".quicksand");
         }
-            
     }
 }
