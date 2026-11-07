@@ -10,17 +10,25 @@ namespace Quicksand.Compat;
 
 internal static class VigorStaminaCompat
 {
-    internal static bool IsExhausted(ICoreAPI api, Entity entity)
+    internal static bool IsExhausted(ICoreAPI api, EntityPlayer player)
     {
         if (!api.ModLoader.IsModEnabled("vigor")) return false;
-        return InternalIsExhausted(entity);
+        return InternalIsExhausted(api, player);
     }
     
     [MethodImpl( MethodImplOptions.NoInlining)]
-    private static bool InternalIsExhausted(Entity entity)
+    private static bool InternalIsExhausted(ICoreAPI api, EntityPlayer player)
     {
-        EntityBehaviorVigorStamina? behavior = (EntityBehaviorVigorStamina?) entity.GetBehavior("vigorstamina");
-        return behavior?.IsExhausted ?? false;
+        VigorModSystem? modSystem = api.ModLoader.GetModSystem<VigorModSystem>();
+        if (modSystem == null) return false;
+        if (modSystem.ClientAPI == null)
+        {
+            modSystem.ClientAPI = new VigorAPI(api);
+            api.Logger.Error("Quicksand: Vigor ClientAPI instance not set");
+            //return;
+        }
+
+        return modSystem.ClientAPI.IsExhausted(player);
     }
     
     internal static bool StaminaCost(ICoreAPI api, EntityPlayer player, bool shouldDrain)
@@ -43,7 +51,7 @@ internal static class VigorStaminaCompat
         }
         if (shouldDrain)
         {
-            modSystem.ClientAPI.StartStaminaDrain(player, player.PlayerUID + ".quicksand", 5f);
+            modSystem.ClientAPI.StartStaminaDrain(player, player.PlayerUID + ".quicksand", 20f);
         }
         else
         {

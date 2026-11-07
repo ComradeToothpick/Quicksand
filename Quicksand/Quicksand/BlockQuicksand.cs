@@ -48,16 +48,19 @@ public class BlockQuicksand : Block
         EntityControls? controls = (entity as EntityAgent)?.Controls;
         if (controls != null && (controls.NoClip || controls.IsFlying || controls.DetachedMode)) return;
         
-        bool exhausted = VigorStaminaCompat.IsExhausted(api, entity);
         
+        bool exhausted = false;
         bool climbing = controls != null && controls.Jump;
         bool wading = controls != null && controls.TriesToMove;
         double targetVerticalSpeed = climbing ? climbSpeed : -SinkSpeed(controls);
 
         Vec3d motion = entity.Pos.Motion;
-        if (entity is EntityPlayer player) VigorStaminaCompat.StaminaCost(api, player, climbing);
-            
-        motion.Y = wading ? 2 * -stillSinkSpeed : (exhausted ? 2 * -stillSinkSpeed : targetVerticalSpeed);
+        if (entity is EntityPlayer player)
+        {
+            VigorStaminaCompat.StaminaCost(api, player, climbing);
+            exhausted = VigorStaminaCompat.IsExhausted(api, player);
+        }
+        motion.Y = exhausted ? 3 * -stillSinkSpeed : (wading ? 2 * -stillSinkSpeed : targetVerticalSpeed);
         if (entity.ApplyGravity)
         {
             float gravityTick = world.Side == EnumAppSide.Client ? 1f / 60f : GlobalConstants.PhysicsFrameTime;
