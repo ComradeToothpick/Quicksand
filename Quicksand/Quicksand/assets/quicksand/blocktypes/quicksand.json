@@ -20,7 +20,7 @@
 	drops: [
 		{
 			type: "block",
-			code: "sand-{rock}",
+			code: "game:sand-{rock}",
 			quantity: { avg: 1, var: 0 }
 		}
 	],
