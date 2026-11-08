@@ -51,7 +51,7 @@ internal static class VigorStaminaCompat
         }
         if (shouldDrain)
         {
-            modSystem.ClientAPI.StartStaminaDrain(player, player.PlayerUID + ".quicksand", 20f);
+            modSystem.ClientAPI.StartStaminaDrain(player, player.PlayerUID + ".quicksand", QuicksandModSystem.Config.struggleDrain);
         }
         else
         {

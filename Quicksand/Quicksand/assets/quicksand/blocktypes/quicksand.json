@@ -29,12 +29,6 @@
 	replaceable: 500,
 	resistance: 5.5,
 	lightAbsorption: 0,
-	attributes: {
-		stillSinkSpeed: 0.002,
-		maxSinkSpeed: 0.007,
-		climbSpeed: 0.004,
-		maxHorizontalSpeed: 0.05
-	},
 	sounds: {
 		place: "game:block/sand",
 		break: "game:block/sand",

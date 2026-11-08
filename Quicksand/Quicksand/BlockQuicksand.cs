@@ -17,6 +17,8 @@ public class BlockQuicksand : Block
     private float climbSpeed = 0.004f;
     private float maxHorizontalSpeed = 0.05f;
     private float friction = 0.99f;
+    private float struggleDrain = 20f;
+    private bool blindEnabled = true;
     internal static bool vigorEnabled = false;
     private QuicksandOverlay overlay;
     
@@ -25,18 +27,27 @@ public class BlockQuicksand : Block
     {
         base.OnLoaded(api);
 
-        if (Attributes == null) return;
+        
         modSystem = api.ModLoader.GetModSystem<QuicksandModSystem>();
-        stillSinkSpeed = Attributes["stillSinkSpeed"].AsFloat(stillSinkSpeed);
-        maxSinkSpeed = Attributes["maxSinkSpeed"].AsFloat(maxSinkSpeed);
-        climbSpeed = Attributes["climbSpeed"].AsFloat(climbSpeed);
-        maxHorizontalSpeed = Attributes["maxHorizontalSpeed"].AsFloat(maxHorizontalSpeed);
+        ApplyConfig();
+        
         if (api.Side == EnumAppSide.Client)
         {
             ICoreClientAPI capi = (ICoreClientAPI)api;
             overlay = new QuicksandOverlay(capi);
             capi.Gui.RegisterDialog(this.overlay);
         }
+    }
+
+    private void ApplyConfig()
+    {
+        stillSinkSpeed = QuicksandModSystem.Config.stillSinkSpeed;
+        maxSinkSpeed = QuicksandModSystem.Config.maxSinkSpeed;
+        climbSpeed = QuicksandModSystem.Config.climbSpeed;
+        maxHorizontalSpeed = QuicksandModSystem.Config.maxHorizontalSpeed;
+        friction = QuicksandModSystem.Config.friction;
+        struggleDrain = QuicksandModSystem.Config.struggleDrain;
+        blindEnabled = QuicksandModSystem.Config.blindEnabled;
     }
 
     public override void OnEntityInside(IWorldAccessor world, Entity entity, BlockPos pos)
@@ -82,7 +93,7 @@ public class BlockQuicksand : Block
             EntityBehaviorBreathe? breathe = entity.GetBehavior<EntityBehaviorBreathe>();
             if (breathe != null) breathe.HasAir = false;
         }
-        if (world.Side == EnumAppSide.Client && entity is EntityPlayer)//checking the entity is a player to hopefully avoid other entities causing player blindness
+        if (world.Side == EnumAppSide.Client && entity is EntityPlayer && blindEnabled)//checking the entity is a player to hopefully avoid other entities causing player blindness
         {
             if (((EntityPlayer)entity).PlayerUID == ((ICoreClientAPI)world.Api).World.Player.PlayerUID)//Only the client player should trigger blindness for the player
             {
