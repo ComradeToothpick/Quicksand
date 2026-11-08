@@ -13,13 +13,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-    
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <Reference Include="Vigor" Publicize="true">
-            <HintPath>..\..\..\..\ModReferences\vigor_122.7.5\Vigor.dll</HintPath>
+        <Reference Include="Stamina">
+            <HintPath>..\..\..\..\ModReferences\stamina_1.0.1\Stamina.dll</HintPath>
             <Private>false</Private>
         </Reference>
         <Reference Include="VintagestoryAPI">

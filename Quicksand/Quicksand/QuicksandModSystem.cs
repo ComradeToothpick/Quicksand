@@ -21,7 +21,7 @@ public class QuicksandModSystem : ModSystem
     {
         base.Start(api);
         api.RegisterBlockClass("BlockQuicksand", typeof(BlockQuicksand));
-        BlockQuicksand.vigorEnabled = api.ModLoader.IsModEnabled("vigor");
+        BlockQuicksand.staminaEnabled = api.ModLoader.IsModEnabled("vigor");
         api.Network
             .RegisterChannel("quicksand")
             .RegisterMessageType<ConfigMessage>()

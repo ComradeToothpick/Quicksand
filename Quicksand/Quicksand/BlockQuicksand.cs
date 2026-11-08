@@ -19,7 +19,7 @@ public class BlockQuicksand : Block
     private float friction = 0.99f;
     private float struggleDrain = 20f;
     private bool blindEnabled = true;
-    internal static bool vigorEnabled = false;
+    internal static bool staminaEnabled = false;
     private QuicksandOverlay overlay;
     
     private QuicksandModSystem modSystem;
@@ -66,11 +66,10 @@ public class BlockQuicksand : Block
         double targetVerticalSpeed = climbing ? climbSpeed : -SinkSpeed(controls);
 
         Vec3d motion = entity.Pos.Motion;
-        if (entity is EntityPlayer player)
-        {
-            VigorStaminaCompat.StaminaCost(api, player, climbing);
-            exhausted = VigorStaminaCompat.IsExhausted(api, player);
-        }
+        
+        StaminaCompat.StaminaCost(api, entity, climbing);
+        exhausted = StaminaCompat.IsExhausted(api, entity);
+        
         motion.Y = exhausted ? 3 * -stillSinkSpeed : (wading ? 2 * -stillSinkSpeed : targetVerticalSpeed);
         if (entity.ApplyGravity)
         {
@@ -93,9 +92,11 @@ public class BlockQuicksand : Block
             EntityBehaviorBreathe? breathe = entity.GetBehavior<EntityBehaviorBreathe>();
             if (breathe != null) breathe.HasAir = false;
         }
-        if (world.Side == EnumAppSide.Client && entity is EntityPlayer && blindEnabled)//checking the entity is a player to hopefully avoid other entities causing player blindness
+        //checking the entity is a player to avoid other entities causing player blindness
+        if (world.Side == EnumAppSide.Client && entity is EntityPlayer player && blindEnabled)
         {
-            if (((EntityPlayer)entity).PlayerUID == ((ICoreClientAPI)world.Api).World.Player.PlayerUID)//Only the client player should trigger blindness for the player
+            //Only the client player should trigger blindness for the player
+            if (player.PlayerUID == ((ICoreClientAPI)world.Api).World.Player.PlayerUID)
             {
                 if (!overlay.IsOpened()) overlay.TryOpen();
                 overlay.alpha = IsEyeInside(entity, pos) ? 1f : Math.Max(GetAlpha(entity, pos), overlay.alpha);
