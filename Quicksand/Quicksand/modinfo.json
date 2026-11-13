@@ -11,7 +11,7 @@
         "Inanis"
     ],
     "description": "Adds quicksand that generates near water and can be placed from the creative inventory.",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "dependencies": {
         "game": "1.22.0"
     }
