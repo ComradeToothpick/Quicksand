@@ -12,6 +12,7 @@ public class QuicksandModSystem : ModSystem
     public static QuicksandConfig Config { get; private set; } = new();
     
     private const string ConfigFile = "quicksand.json";
+    private ICoreAPI api;
     private ICoreClientAPI capi;
     private ICoreServerAPI sapi;
     private bool clientBlind = false;
@@ -19,6 +20,7 @@ public class QuicksandModSystem : ModSystem
     private IClientNetworkChannel clientChannel;
     public override void Start(ICoreAPI api)
     {
+        this.api = api;
         base.Start(api);
         api.RegisterBlockClass("BlockQuicksand", typeof(BlockQuicksand));
         BlockQuicksand.staminaEnabled = api.ModLoader.IsModEnabled("vigor");
@@ -35,7 +37,6 @@ public class QuicksandModSystem : ModSystem
         clientChannel = capi.Network
             .GetChannel("quicksand")
             .SetMessageHandler<ConfigMessage>(OnConfigReceived);
-        clientChannel.SendPacket(new ConfigRequest() { sendToClient = true });
     }
 
     private void OnConfigReceived(ConfigMessage configMessage)//Client side
@@ -60,6 +61,22 @@ public class QuicksandModSystem : ModSystem
         serverChannel = sapi.Network
             .GetChannel("quicksand")
             .SetMessageHandler<ConfigRequest>(OnConfigRequest);
+        sapi.Event.PlayerJoin += OnPlayerJoin;
+    }
+
+    private void OnPlayerJoin(IPlayer player)
+    {
+        if (api.Side == EnumAppSide.Server)
+        {
+            serverChannel.SendPacket(new ConfigMessage() 
+            {stillSinkSpeed =  Config.stillSinkSpeed,
+                maxSinkSpeed = Config.maxSinkSpeed,
+                climbSpeed = Config.climbSpeed,
+                maxHorizontalSpeed = Config.maxHorizontalSpeed,
+                friction = Config.friction,
+                struggleDrain = Config.struggleDrain,
+                blindEnabled = Config.blindEnabled }, (IServerPlayer) player);
+        }
     }
 
     private void OnConfigRequest(IServerPlayer fromPlayer, ConfigRequest packet)
@@ -73,6 +90,8 @@ public class QuicksandModSystem : ModSystem
                 struggleDrain = Config.struggleDrain,
                 blindEnabled = Config.blindEnabled }, fromPlayer);
     }
+    
+    
 
 
     private QuicksandConfig LoadConfig(ICoreAPI api)
