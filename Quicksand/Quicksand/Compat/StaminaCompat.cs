@@ -37,7 +37,7 @@ internal static class StaminaCompat
         
         if (shouldDrain)
         {
-            StaminaApi.StartDrain(entity, entity.EntityId + ".quicksand", QuicksandModSystem.Config.struggleDrain);
+            StaminaApi.StartDrain(entity, entity.EntityId + ".quicksand", QuicksandModSystem.Config.struggleDrain, Stamina.StaminaCost.Block);
         }
         else
         {

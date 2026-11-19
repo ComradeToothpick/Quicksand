@@ -14,7 +14,7 @@
 
     <ItemGroup>
         <Reference Include="Stamina">
-            <HintPath>..\..\..\..\ModReferences\stamina_1.0.1\Stamina.dll</HintPath>
+            <HintPath>..\..\..\..\ModReferences\stamina_1.2.0\Stamina.dll</HintPath>
             <Private>false</Private>
         </Reference>
         <Reference Include="VintagestoryAPI">
