@@ -24,14 +24,22 @@ public class QuicksandModSystem : ModSystem
         base.Start(api);
         api.RegisterBlockClass("BlockQuicksand", typeof(BlockQuicksand));
         BlockQuicksand.staminaEnabled = api.ModLoader.IsModEnabled("vigor");
-        api.Network
-            .RegisterChannel("quicksand")
-            .RegisterMessageType<ConfigMessage>()
-            .RegisterMessageType<ConfigRequest>();
+        if (api.Network.GetChannel("quicksand") == null)
+        {
+            api.Network.RegisterChannel("quicksand")
+                .RegisterMessageType<ConfigMessage>()
+                .RegisterMessageType<ConfigRequest>();
+        }
     }
 
     public override void StartClientSide(ICoreClientAPI api)
     {
+        if (api.Network.GetChannel("quicksand") == null)
+        {
+            api.Network.RegisterChannel("quicksand")
+                .RegisterMessageType<ConfigMessage>()
+                .RegisterMessageType<ConfigRequest>();
+        }
         base.StartClientSide(api);
         capi = api;
         clientChannel = capi.Network
@@ -55,6 +63,12 @@ public class QuicksandModSystem : ModSystem
     }
     public override void StartServerSide(ICoreServerAPI api)
     {
+        if (api.Network.GetChannel("quicksand") == null)
+        {
+            api.Network.RegisterChannel("quicksand")
+                .RegisterMessageType<ConfigMessage>()
+                .RegisterMessageType<ConfigRequest>();
+        }
         sapi = api;
         Config = LoadConfig(api);
         
