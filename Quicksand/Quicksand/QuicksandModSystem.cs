@@ -18,6 +18,7 @@ public class QuicksandModSystem : ModSystem
     private bool clientBlind = false;
     private IServerNetworkChannel serverChannel;
     private IClientNetworkChannel clientChannel;
+    public QuicksandOverlay overlay;
     public override void Start(ICoreAPI api)
     {
         this.api = api;
@@ -45,6 +46,8 @@ public class QuicksandModSystem : ModSystem
         clientChannel = capi.Network
             .GetChannel("quicksand")
             .SetMessageHandler<ConfigMessage>(OnConfigReceived);
+        overlay = new QuicksandOverlay(capi);
+        capi.Gui.RegisterDialog(this.overlay);
     }
 
     private void OnConfigReceived(ConfigMessage configMessage)//Client side

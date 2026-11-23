@@ -33,9 +33,7 @@ public class BlockQuicksand : Block
         
         if (api.Side == EnumAppSide.Client)
         {
-            ICoreClientAPI capi = (ICoreClientAPI)api;
-            overlay = new QuicksandOverlay(capi);
-            capi.Gui.RegisterDialog(this.overlay);
+            overlay = modSystem.overlay;
         }
     }
 
